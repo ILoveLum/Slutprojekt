@@ -5,22 +5,45 @@
     <title>Blackjack</title>
 </head>
 <body>
-    <h1>🂡 Blackjack</h1>
-    <form action="/blackjack/draw" method="post">
-        <button type="submit">Dra 2 kort</button>
-    </form>
+    <h1>🃏 Blackjack</h1>
 
-    {% if cards %}
-        <h2>Dina kort:</h2>
-        {% for card in cards %}
+    <h2>Spelarens kort:</h2>
+    {% for card in player_cards %}
+        <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
+    {% endfor %}
+    <p>Poäng: {{ player_points }}</p>
+
+    <h2>Dealerns kort:</h2>
+    {% if game_over %}
+        <!-- Visa alla dealerns kort och poäng när spelet är över -->
+        {% for card in dealer_cards %}
             <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
         {% endfor %}
+        <p>Dealerns poäng: {{ dealer_points }}</p>
+    {% else %}
+        <!-- Visa endast dealerns första kort + baksida på andra kortet -->
+        <img src="{{ dealer_cards[0].image }}" alt="{{ dealer_cards[0].value }} {{ dealer_cards[0].suit }}">
+        <img src="/static/back.png" alt="Baksida">
     {% endif %}
-    {% if points is defined %}
-    <p>Poäng: {{ points }}</p>
+
+    {% if game_over %}
+        <h3>{{ result }}</h3>
+        <a href="/blackjack">Spela igen</a>
+    {% else %}
+        <form action="/blackjack/hit" method="post" style="display:inline;">
+            <button type="submit">Hit</button>
+        </form>
+
+        <form action="/blackjack/stay" method="post" style="display:inline;">
+            <button type="submit">Stay</button>
+        </form>
+    {% endif %}
+
+    {% if error %}
+    <p style="color:red;">{{ error }}</p>
     {% endif %}
 
     <br><br>
-    <a href="/">Tillbaka till start</a>
+    <a href="/">⬅ Tillbaka</a>
 </body>
 </html>

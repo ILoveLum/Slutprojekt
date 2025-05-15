@@ -20,6 +20,7 @@ class Blackjack: # Class för blackjack och spelets funktioner
             print(f"[ERROR] Kunde inte skapa kortlek: {e}")
             
     def draw_cards(self,count=2): # Drar 2 kort för spelaren
+        
         if not self._deck_id:
             return None
         try:
@@ -87,7 +88,7 @@ class HiLo: # Class och funktioner för spelet Higher or lower (HiLo)
         new_value = self._card_value(new_card["value"]) # Nya värdet
 
         correct = (guess == "higher" and new_value > old_value or old_value == new_value) or \
-                  (guess == "lower" and new_value < old_value or old_value == new_value) 
+                  (guess == "lower" and new_value < old_value or old_value == new_value) # Kollar om det är rätt. Samma värde räknas som rätt
                   
         return new_card, correct, None
     
@@ -146,14 +147,106 @@ def hilo_guess():
         session.clear()
         return render_template("hilo.html", card=new_card, score=score, correct=False, game_over=True)
 
+def render_blackjack_page(error=None):
+    player_cards = session.get("player_cards", [])
+    dealer_cards = session.get("dealer_cards", [])
+    player_points = blackjack_game.calculate_points(player_cards)
+    dealer_points = blackjack_game.calculate_points(dealer_cards) if session.get("game_over") else None
+    game_over = session.get("game_over", False)
+    result = session.get("result", None)
+
+    # Om spelet inte är över, visa endast första dealer-kortet + baksida
+    if not game_over and dealer_cards:
+        displayed_dealer_cards = [dealer_cards[0], {"image": "/static/back.png"}]
+    else:
+        displayed_dealer_cards = dealer_cards
+
+    return render_template("blackjack.html",
+                           player_cards=player_cards,
+                           dealer_cards=displayed_dealer_cards,
+                           player_points=player_points,
+                           dealer_points=dealer_points,
+                           game_over=game_over,
+                           result=result,
+                           error=error)
+
 
 @app.route('/')
 def index():
     return render_template("index.html")
 
+
 @app.route("/blackjack")
 def blackjack():
-    return render_template("blackjack.html")
+    return redirect(url_for("blackjack_start"))
+
+
+@app.route('/blackjack/start')
+def blackjack_start():
+    player_cards = blackjack_game.draw_cards(2)
+    dealer_cards = blackjack_game.draw_cards(2)
+
+    if not player_cards or not dealer_cards:
+        return "Kunde inte dra kort – kontrollera internetanslutning eller API:n."
+
+    session["player_cards"] = player_cards
+    session["dealer_cards"] = dealer_cards
+    session["game_over"] = False
+    session["result"] = None
+
+    player_points = blackjack_game.calculate_points(player_cards)
+    if player_points == 21:
+        session["game_over"] = True
+        session["result"] = "Blackjack! Du vinner direkt!"
+
+    return render_blackjack_page()
+
+
+@app.route('/blackjack/hit', methods=['POST'])
+def blackjack_hit():
+    
+    player_cards = session.get("player_cards", [])
+    dealer_cards = session.get("dealer_cards", [])
+
+    new_card = blackjack_game.draw_cards(1)[0]
+    player_cards.append(new_card)
+    session["player_cards"] = player_cards
+
+    player_points = blackjack_game.calculate_points(player_cards)
+    if player_points > 21:
+        session["game_over"] = True
+        session["result"] = "Du fick över 21. Du förlorar!"
+
+    return render_blackjack_page()
+
+@app.route('/blackjack/stay', methods=['POST'])
+def blackjack_stay():
+
+    player_cards = session.get("player_cards", [])
+    dealer_cards = session.get("dealer_cards", [])
+
+    player_points = blackjack_game.calculate_points(player_cards)
+    dealer_points = blackjack_game.calculate_points(dealer_cards)
+
+    while dealer_points < 17:
+        new_card = blackjack_game.draw_cards(1)[0]
+        dealer_cards.append(new_card)
+        dealer_points = blackjack_game.calculate_points(dealer_cards)
+
+    session["game_over"] = True
+
+    if dealer_points > 21 or player_points > dealer_points:
+        result = "Du vinner!"
+    elif dealer_points > player_points:
+        result = "Dealern vinner."
+    else:
+        result = "Oavgjort!"
+
+    session["result"] = result
+
+    return render_blackjack_page()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
