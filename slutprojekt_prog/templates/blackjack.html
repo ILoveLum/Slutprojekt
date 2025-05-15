@@ -2,48 +2,352 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>Blackjack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack - Lucky Spades Casino</title>
+    <style>
+        :root {
+            --primary: #1e1e2d;
+            --secondary: #2d2d44;
+            --accent: #d4af37;
+            --text: #ffffff;
+            --error: #e74c3c;
+            --success: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--primary);
+            background-image: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 15px 0;
+            border-bottom: 3px solid var(--accent);
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo span {
+            font-size: 32px;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            background-color: var(--accent);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .game-container {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .game-title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--accent);
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .card-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-display img {
+            height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .card-display img:hover {
+            transform: translateY(-10px) rotate(5deg);
+        }
+        
+        .points {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+        
+        .game-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            background-color: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .result {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .win {
+            color: var(--success);
+            background-color: rgba(46, 204, 113, 0.2);
+        }
+        
+        .lose {
+            color: var(--error);
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+        
+        .draw {
+            color: var(--accent);
+            background-color: rgba(212, 175, 55, 0.2);
+        }
+        
+        .error {
+            color: var(--error);
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-top: 2px solid var(--accent);
+            margin-top: 30px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: var(--text);
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 10px 0;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background-color: var(--accent);
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .game-container {
+                padding: 15px;
+            }
+            
+            .card-display img {
+                height: 120px;
+            }
+            
+            .game-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>🃏 Blackjack</h1>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span>♠</span> Lucky Spades Casino <span>♠</span>
+            </div>
+            <nav>
+                <a href="/" class="nav-link">Hem</a>
+                <a href="/blackjack" class="nav-link">Blackjack</a>
+                <a href="/hilo" class="nav-link">Hi-Lo</a>
+            </nav>
+        </div>
+    </header>
 
-    <h2>Spelarens kort:</h2>
-    {% for card in player_cards %}
-        <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
-    {% endfor %}
-    <p>Poäng: {{ player_points }}</p>
+    <div class="container">
+        <div class="game-container">
+            <h1 class="game-title">🃏 Blackjack</h1>
+            
+            <div class="card-section">
+                <h2 class="section-title">Spelarens kort:</h2>
+                <div class="card-display">
+                    {% for card in player_cards %}
+                        <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
+                    {% endfor %}
+                </div>
+                <div class="points">Poäng: {{ player_points }}</div>
+                
+                {% if not game_over %}
+                <div class="game-buttons">
+                    <form action="/blackjack/hit" method="post" style="display:inline;">
+                        <button type="submit" class="btn">Hit</button>
+                    </form>
+                    
+                    <form action="/blackjack/stay" method="post" style="display:inline;">
+                        <button type="submit" class="btn">Stay</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="card-section">
+                <h2 class="section-title">Dealerns kort:</h2>
+                <div class="card-display">
+                    {% if game_over %}
+                        <!-- Visa alla dealerns kort och poäng när spelet är över -->
+                        {% for card in dealer_cards %}
+                            <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
+                        {% endfor %}
+                    {% else %}
+                        <!-- Visa endast dealerns första kort + baksida på andra kortet -->
+                        <img src="{{ dealer_cards[0].image }}" alt="{{ dealer_cards[0].value }} {{ dealer_cards[0].suit }}">
+                        <img src="/static/back.png" alt="Baksida">
+                    {% endif %}
+                </div>
+                
+                {% if game_over %}
+                    <div class="points">Dealerns poäng: {{ dealer_points }}</div>
+                {% endif %}
+            </div>
+            
+            {% if game_over %}
+                <div class="result {% if 'Vinst' in result %}win{% elif 'Förlust' in result %}lose{% else %}draw{% endif %}">
+                    {{ result }}
+                </div>
+                <div class="game-buttons">
+                    <a href="/blackjack" class="btn">Spela igen</a>
+                </div>
+            {% endif %}
+            
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="/" class="back-link">⬅ Tillbaka till menyn</a>
+            </div>
+        </div>
+    </div>
 
-    <h2>Dealerns kort:</h2>
-    {% if game_over %}
-        <!-- Visa alla dealerns kort och poäng när spelet är över -->
-        {% for card in dealer_cards %}
-            <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
-        {% endfor %}
-        <p>Dealerns poäng: {{ dealer_points }}</p>
-    {% else %}
-        <!-- Visa endast dealerns första kort + baksida på andra kortet -->
-        <img src="{{ dealer_cards[0].image }}" alt="{{ dealer_cards[0].value }} {{ dealer_cards[0].suit }}">
-        <img src="/static/back.png" alt="Baksida">
-    {% endif %}
-
-    {% if game_over %}
-        <h3>{{ result }}</h3>
-        <a href="/blackjack">Spela igen</a>
-    {% else %}
-        <form action="/blackjack/hit" method="post" style="display:inline;">
-            <button type="submit">Hit</button>
-        </form>
-
-        <form action="/blackjack/stay" method="post" style="display:inline;">
-            <button type="submit">Stay</button>
-        </form>
-    {% endif %}
-
-    {% if error %}
-    <p style="color:red;">{{ error }}</p>
-    {% endif %}
-
-    <br><br>
-    <a href="/">⬅ Tillbaka</a>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Lucky Spades Casino. Alla rättigheter förbehållna.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Spara scroll-position före sidan lämnas
+        window.addEventListener("beforeunload", function () {
+          localStorage.setItem("scrollY", window.scrollY);
+        });
+      
+        // Återställ scroll-position när sidan laddas
+        window.addEventListener("load", function () {
+          const scrollY = localStorage.getItem("scrollY");
+          if (scrollY !== null) {
+            window.scrollTo(0, parseInt(scrollY));
+          }
+        });
+      </script>
+      
 </body>
 </html>

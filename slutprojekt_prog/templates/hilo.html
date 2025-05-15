@@ -2,37 +2,336 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>Hi-Lo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi-Lo - Lucky Spades Casino</title>
+    <style>
+        :root {
+            --primary: #1e1e2d;
+            --secondary: #2d2d44;
+            --accent: #d4af37;
+            --text: #ffffff;
+            --error: #e74c3c;
+            --success: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--primary);
+            background-image: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 15px 0;
+            border-bottom: 3px solid var(--accent);
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo span {
+            font-size: 32px;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-link:hover {
+            background-color: var(--accent);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .game-container {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .game-title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--accent);
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .card-display {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .card-display img {
+            height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+            transform: rotate(-5deg);
+        }
+        
+        .card-display img:hover {
+            transform: translateY(-10px) rotate(5deg);
+        }
+        
+        .score-display {
+            font-size: 22px;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            display: inline-block;
+            min-width: 200px;
+        }
+        
+        .guess-result {
+            font-size: 20px;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .correct {
+            color: var(--success);
+            background-color: rgba(46, 204, 113, 0.2);
+        }
+        
+        .wrong {
+            color: var(--error);
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+        
+        .game-over {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(212, 175, 55, 0.2);
+            border-radius: 5px;
+            color: var(--accent);
+        }
+        
+        .game-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            background-color: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-higher {
+            background-color: var(--success);
+        }
+        
+        .btn-lower {
+            background-color: var(--error);
+        }
+        
+        .btn-stop {
+            background-color: #3498db;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-top: 2px solid var(--accent);
+            margin-top: 30px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: var(--text);
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background-color: var(--accent);
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .game-container {
+                padding: 15px;
+            }
+            
+            .card-display img {
+                height: 160px;
+            }
+            
+            .game-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>🔼Hi-Lo🔽</h1>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span>♠</span> Lucky Spades Casino <span>♠</span>
+            </div>
+            <nav>
+                <a href="/" class="nav-link">Hem</a>
+                <a href="/blackjack" class="nav-link">Blackjack</a>
+                <a href="/hilo" class="nav-link">Hi-Lo</a>
+            </nav>
+        </div>
+    </header>
 
-    {% if card %}
-        <p>Ditt kort:</p>
-        <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
-    {% endif %}
-    
-    <p>Antal rätt: {{ score }}</p>
-
-    {% if game_over %}
-        <h2>Spelet är över! Du fick {{ score }} rätt.</h2>
-        <a href="/hilo">Börja om</a>
-    {% else %}
-        {% if correct is defined %}
-            {% if correct %}
-                <p>Rätt gissat!</p>
-            {% else %}
-                <p>Fel gissat!</p>
+    <div class="container">
+        <div class="game-container">
+            <h1 class="game-title">🔼 Hi-Lo 🔽</h1>
+            
+            {% if card %}
+                <div class="card-display">
+                    <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
+                </div>
             {% endif %}
-        {% endif %}
+            
+            <div class="score-display">
+                Antal rätt: <strong>{{ score }}</strong>
+            </div>
+            
+            {% if game_over %}
+                <div class="game-over">
+                    Spelet är över! Du fick {{ score }} rätt.
+                </div>
+                <div class="game-buttons">
+                    <a href="/hilo" class="btn">Börja om</a>
+                </div>
+            {% else %}
+                {% if correct is defined %}
+                    {% if correct %}
+                        <div class="guess-result correct">
+                            <i class="fas fa-check-circle"></i> Rätt gissat!
+                        </div>
+                    {% else %}
+                        <div class="guess-result wrong">
+                            <i class="fas fa-times-circle"></i> Fel gissat!
+                        </div>
+                    {% endif %}
+                {% endif %}
 
-        <form action="/hilo/guess" method="post">
-            <button name="guess" value="higher">Högre</button>
-            <button name="guess" value="lower">Lägre</button>
-            <button name="guess" value="stop">Stoppa spelet</button>
-        </form>
-    {% endif %}
+                <form action="/hilo/guess" method="post" class="game-buttons">
+                    <button name="guess" value="higher" class="btn btn-higher">
+                        <i class="fas fa-arrow-up"></i> Högre
+                    </button>
+                    <button name="guess" value="lower" class="btn btn-lower">
+                        <i class="fas fa-arrow-down"></i> Lägre
+                    </button>
+                    <button name="guess" value="stop" class="btn btn-stop">
+                        <i class="fas fa-stop"></i> Stoppa spelet
+                    </button>
+                </form>
+            {% endif %}
+            
+            <a href="/" class="back-link">⬅ Tillbaka till menyn</a>
+        </div>
+    </div>
 
-    <br><a href="/">⬅ Tillbaka</a>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Lucky Spades Casino. Alla rättigheter förbehållna.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Spara scroll-position före sidan lämnas
+        window.addEventListener("beforeunload", function () {
+          localStorage.setItem("scrollY", window.scrollY);
+        });
+      
+        // Återställ scroll-position när sidan laddas
+        window.addEventListener("load", function () {
+          const scrollY = localStorage.getItem("scrollY");
+          if (scrollY !== null) {
+            window.scrollTo(0, parseInt(scrollY));
+          }
+        });
+      </script>
+      
 </body>
 </html>
