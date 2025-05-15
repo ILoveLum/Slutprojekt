@@ -6,7 +6,18 @@
 </head>
 <body>
     <h1>🂡 Blackjack</h1>
-    <p>Spelet är igång! (kommer lägga till kort snart)</p>
+    <form action="/blackjack/draw" method="post">
+        <button type="submit">Dra 2 kort</button>
+    </form>
+
+    {% if cards %}
+        <h2>Dina kort:</h2>
+        {% for card in cards %}
+            <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
+        {% endfor %}
+    {% endif %}
+
+    <br><br>
     <a href="/">Tillbaka till start</a>
 </body>
 </html>

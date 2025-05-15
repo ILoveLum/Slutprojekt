@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, redirect, url_for, render_template
 import requests
 
 app = Flask(__name__)
@@ -17,7 +17,23 @@ class Blackjack:
         except requests.RequestException as e:
             print(f"[ERROR] Kunde inte skapa kortlek: {e}")
             
-Blackjack_game = Blackjack(nr_decks=6)
+    def draw_cards(self,count=2):
+        if not self._deck_id:
+            return None
+        try:
+            response = requests.get(f"https://www.deckofcardsapi.com/api/deck/{self._deck_id}/draw/?count={count}")
+            response.raise_for_status()
+            return response.json().get("cards", [])
+        except requests.RequestException as e:
+            print(f"[ERROR] Kunde inte dra kort: {e}")
+            return None
+            
+blackjack_game = Blackjack(nr_decks=6)
+
+@app.route('/blackjack/draw', methods=['POST'])
+def blackjack_draw():
+    cards = blackjack_game.draw_cards(2)
+    return render_template("blackjack.html", cards=cards)
 
 @app.route('/')
 def index():
