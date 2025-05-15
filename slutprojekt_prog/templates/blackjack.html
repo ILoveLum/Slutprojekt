@@ -16,6 +16,9 @@
             <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
         {% endfor %}
     {% endif %}
+    {% if points is defined %}
+    <p>Poäng: {{ points }}</p>
+    {% endif %}
 
     <br><br>
     <a href="/">Tillbaka till start</a>

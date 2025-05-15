@@ -27,13 +27,36 @@ class Blackjack:
         except requests.RequestException as e:
             print(f"[ERROR] Kunde inte dra kort: {e}")
             return None
+        
+    def calculate_points(self,cards):
+        points = 0
+        aces = 0
+        
+        for card in cards:
+            value = card ["value"]
+            if value.isdigit():
+                points += int(value)
+            elif value in ["JACK", "QUEEN", "KING"]:
+                points += 10
+            elif value == "ACE":
+                aces += 1
+                
+        for _ in range(aces):
+            # Om 11 inte bustar, använd 11 annars 1
+            if points + 11 <= 21:
+                points += 11
+            else:
+                points += 1
+
+        return points
             
 blackjack_game = Blackjack(nr_decks=6)
 
 @app.route('/blackjack/draw', methods=['POST'])
 def blackjack_draw():
     cards = blackjack_game.draw_cards(2)
-    return render_template("blackjack.html", cards=cards)
+    points = blackjack_game.calculate_points(cards) if cards else 0
+    return render_template("blackjack.html", cards=cards, points=points)
 
 @app.route('/')
 def index():
