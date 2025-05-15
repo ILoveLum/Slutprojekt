@@ -5,13 +5,32 @@
     <title>Hi-Lo</title>
 </head>
 <body>
-    <h1>🔼🔽 Hi-Lo</h1>
+    <h1>🔼Hi-Lo🔽</h1>
 
     {% if card %}
-        <p>Startkort:</p>
+        <p>Ditt kort:</p>
         <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
+    {% endif %}
+    
+    <p>Antal rätt: {{ score }}</p>
+
+    {% if game_over %}
+        <h2>Spelet är över! Du fick {{ score }} rätt.</h2>
+        <a href="/hilo">Börja om</a>
     {% else %}
-        <p>Kunde inte dra kort.</p>
+        {% if correct is defined %}
+            {% if correct %}
+                <p>Rätt gissat!</p>
+            {% else %}
+                <p>Fel gissat!</p>
+            {% endif %}
+        {% endif %}
+
+        <form action="/hilo/guess" method="post">
+            <button name="guess" value="higher">Högre</button>
+            <button name="guess" value="lower">Lägre</button>
+            <button name="guess" value="stop">Stoppa spelet</button>
+        </form>
     {% endif %}
 
     <br><a href="/">⬅ Tillbaka</a>
