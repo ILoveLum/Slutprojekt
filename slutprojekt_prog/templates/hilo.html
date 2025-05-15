@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Hi-Lo</title>
+</head>
+<body>
+    <h1>🔼🔽 Hi-Lo</h1>
+
+    {% if card %}
+        <p>Startkort:</p>
+        <img src="{{ card.image }}" alt="{{ card.value }} {{ card.suit }}">
+    {% else %}
+        <p>Kunde inte dra kort.</p>
+    {% endif %}
+
+    <br><a href="/">⬅ Tillbaka</a>
+</body>
+</html>

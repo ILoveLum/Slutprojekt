@@ -49,14 +49,48 @@ class Blackjack:
                 points += 1
 
         return points
+    
+class HiLo:
+    def __init__(self):
+        self._deck_id = None
+        self._create_new_deck()
+
+    def _create_new_deck(self):
+        try:
+            response = requests.get("https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
+            response.raise_for_status()
+            data = response.json()
+            self._deck_id = data["deck_id"]
+        except requests.RequestException as e:
+            print(f"[ERROR] Kunde inte skapa Hi-Lo-lek: {e}")
+
+    def draw_card(self):
+        if not self._deck_id:
+            return None
+        try:
+            response = requests.get(f"https://www.deckofcardsapi.com/api/deck/{self._deck_id}/draw/?count=1")
+            response.raise_for_status()
+            return response.json()["cards"][0]
+        except requests.RequestException as e:
+            print(f"[ERROR] Kunde inte dra kort i Hi-Lo: {e}")
+            return None
+
             
 blackjack_game = Blackjack(nr_decks=6)
+
+hilo_game = HiLo()
 
 @app.route('/blackjack/draw', methods=['POST'])
 def blackjack_draw():
     cards = blackjack_game.draw_cards(2)
     points = blackjack_game.calculate_points(cards) if cards else 0
     return render_template("blackjack.html", cards=cards, points=points)
+
+@app.route('/hilo')
+def hilo():
+    card = hilo_game.draw_card()
+    return render_template("hilo.html", card=card)
+
 
 @app.route('/')
 def index():
