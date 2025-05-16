@@ -246,7 +246,6 @@ def blackjack_stay():
 
     return render_blackjack_page()
 
-
 if __name__ == '__main__':
     app.run(debug=True)
     
