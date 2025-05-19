@@ -162,13 +162,13 @@ def render_blackjack_page(error=None):
         displayed_dealer_cards = dealer_cards
 
     return render_template("blackjack.html",
-                           player_cards=player_cards,
-                           dealer_cards=displayed_dealer_cards,
-                           player_points=player_points,
-                           dealer_points=dealer_points,
-                           game_over=game_over,
-                           result=result,
-                           error=error)
+        player_cards=player_cards,
+        dealer_cards=displayed_dealer_cards,
+        player_points=player_points,
+        dealer_points=dealer_points,
+        game_over=game_over,
+        result=result,
+        error=error)
 
 
 @app.route('/')
